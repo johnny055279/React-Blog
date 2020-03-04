@@ -9,7 +9,8 @@ class Blog extends Component {
 
     state = {
         posts: [],
-        selectedPostId: null
+        selectedPostId: null,
+        error: false,
     }
 
     componentDidMount() {
@@ -17,7 +18,7 @@ class Blog extends Component {
         // get the http request to the url
         // Axios use 'promises' and GET returns a promises, and we can use 'then()' which takes a function as the input and will executed once
         // the promises resolves.
-        axios.get('https://jsonplaceholder.typicode.com/posts').then(response => {
+        axios.get('/posts').then(response => {
 
             // show only 4 data on the page.
             const posts = response.data.slice(0, 4);
@@ -32,8 +33,11 @@ class Blog extends Component {
             });
 
             // setState need write here because axios.get() only send the request to the server, it won't wait the fetch data come back if you write the setState outside the function.
-            this.setState({posts: updatePosts})
-            console.log(response)
+            this.setState({posts: updatePosts});
+
+            // custom error dispaly
+        }).catch(error => {
+            this.setState({error: true});
         });
     }
 
@@ -43,12 +47,17 @@ class Blog extends Component {
 
     render () {
 
-        const posts = this.state.posts.map(post => {
-            return <Post key = {post.id} 
-                         title = {post.title}
-                         author = {post.author}
-                         clicked = {() => this.postSelectedHandler(post.id)}/>
-        })
+        let posts = <p style = {{textAlign:'center'}}>Opps! Something went wong!</p>
+        if(!this.state.error) {
+            posts = this.state.posts.map(post => {
+                return <Post key = {post.id} 
+                             title = {post.title}
+                             author = {post.author}
+                             clicked = {() => this.postSelectedHandler(post.id)}/>
+            });
+        }
+
+        
 
         return (
             <div>

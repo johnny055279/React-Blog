@@ -17,13 +17,21 @@ class FullPost extends Component {
             // Adn we still need to check if there have a post(because at first the loadedPost is 'null').
             // Since 'setState' update the data, 'componentDidUpdate()' update again, then the 'setState()' update again...
             if( !this.state.loadedPost || (this.state.loadedPost && this.state.loadedPost.id !== this.props.id)) {
-                axios.get('https://jsonplaceholder.typicode.com/posts/' + this.props.id).then(response => {
+                axios.get('/posts/' + this.props.id).then(response => {
                     this.setState({loadedPost: response.data})
-                    console.log(response);
                 });
             }
         }
     }
+
+    deletePostHandler = () => {
+        axios.delete('/posts/' + this.props.id).then(response => {
+            // this.setState({loadedPost: response.data})
+            console.log(response);
+            }
+        )
+    };
+
 
     render () {
 
@@ -38,9 +46,9 @@ class FullPost extends Component {
             post = (
                 <div className="FullPost">
                     <h1>{this.state.loadedPost.title}</h1>
-                    <p>{this.state.loadedPost.content}</p>
+                    <p>{this.state.loadedPost.body}</p>
                     <div className="Edit">
-                        <button className="Delete">Delete</button>
+                        <button onClick = {this.deletePostHandler} className="Delete">Delete</button>
                     </div>
                 </div>
             );
